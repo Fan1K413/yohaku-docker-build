@@ -22,7 +22,7 @@ concurrency:
 
 env:
   CACHE_HASH_FILE: build_hash               # 存储上次构建 commit hash 的文件
-  SOURCE_REPO: innei-dev/shiroi             # 源代码仓库
+  SOURCE_REPO: innei-dev/Yohaku             # 源代码仓库
   REGISTRY_NAMESPACE: ${{ secrets.DOCKER_NAMESPACE }}  # GHCR 命名空间
 
 jobs:
