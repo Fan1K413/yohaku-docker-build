@@ -1,5 +1,5 @@
 # Yohaku-docker-build
-Action构建Shiroi镜像
+Action构建Shiroi/Yohaku镜像
 
 
 快捷跳转
