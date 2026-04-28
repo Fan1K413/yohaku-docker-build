@@ -127,6 +127,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+            # 在 'Build and push Docker image' 步骤之前添加
+      - name: Resolve symlinks for Docker build
+        run: |
+          # 检查是否是符号链接
+          if [ -L "packages/design-system" ]; then
+            echo "Resolving symlink for packages/design-system..."
+            TARGET=$(readlink -f packages/design-system)
+            rm packages/design-system
+            cp -rL "$TARGET" packages/design-system
+            echo "Done. Content replaced with real directory."
+          else
+            echo "packages/design-system is not a symlink."
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
