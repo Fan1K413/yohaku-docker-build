@@ -64,25 +64,6 @@ jobs:
           token: ${{ secrets.GH_PAT }}        # 需要访问私有仓库的 PAT
           fetch-depth: 0
           lfs: true
-          submodules: 'recursive'           # ← 添加这一行，递归克隆子模块
-          
-      - name: Diagnose design-system location
-        run: |
-          echo "=== 1. 检查 design-oss 目录 ==="
-          ls -la design-oss/ 2>/dev/null || echo "design-oss/ 不存在"
-
-          echo ""
-          echo "=== 2. 检查符号链接详情 ==="
-          ls -la packages/design-system
-          readlink -f packages/design-system || true
-
-          echo ""
-          echo "=== 3. 检查 .gitmodules ==="
-          cat .gitmodules 2>/dev/null || echo ".gitmodules 不存在"
-
-          echo ""
-          echo "=== 4. 检查 git submodule status ==="
-          git submodule status 2>/dev/null || echo "git submodule status 失败"
 
       - name: Compare cached hash with current commit
         id: compare
@@ -146,20 +127,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-            # 在 'Build and push Docker image' 步骤之前添加
-      - name: Resolve symlinks for Docker build
-        run: |
-          # 检查是否是符号链接
-          if [ -L "packages/design-system" ]; then
-            echo "Resolving symlink for packages/design-system..."
-            TARGET=$(readlink -f packages/design-system)
-            rm packages/design-system
-            cp -rL "$TARGET" packages/design-system
-            echo "Done. Content replaced with real directory."
-          else
-            echo "packages/design-system is not a symlink."
-          fi
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -170,7 +137,6 @@ jobs:
             ghcr.io/${{ env.REGISTRY_NAMESPACE }}/shiroi:${{ github.sha }}
           cache-from: type=gha      # 使用 GitHub Actions 缓存
           cache-to: type=gha,mode=max
-          no-cache: true
 
       - name: Store git metadata for next job
         id: store
