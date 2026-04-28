@@ -64,6 +64,7 @@ jobs:
           token: ${{ secrets.GH_PAT }}        # 需要访问私有仓库的 PAT
           fetch-depth: 0
           lfs: true
+          submodules: 'recursive'           # ← 添加这一行，递归克隆子模块
 
       - name: Compare cached hash with current commit
         id: compare
